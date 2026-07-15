@@ -38,6 +38,19 @@ I think representing placement in RAM will be a consequence of whatever data str
 
 ### Migration Order
 * Switch out gene storage from flags -> LUA data
+	- [x] generate_and_place_flower
+	- [x] generate_flower
+	- [x] place_flower
+		- [x] not necessary, call field place directly
+	- [x] kill_flower
+	- [x] draw_flowers
+		- [x] doesn't need metadata
+	- [x] time_passes (and all nested calls)
+	- [x] breed
+	- [x] is_compatible
+	- [x] get_genes
+		- [x] Not necessary- read field directly
+
 * Switch out sprite storage from default page -> generated in extended memory
 * Rewrite save tool - actually two pieces of functionality
 	* New implementation that exports a field worth of sprite and genes to the spritesheet
@@ -60,5 +73,5 @@ get_genes
 	* pos - x, y coords in the field
 	* genes - see note above about what type to use
 * Field
-	* plants - list of list of plants. Fixed array size. Empty plots are a nil value.
+	* flowers - list of list of plants. Fixed array size. Empty plots are a nil value.
 	* Maybe some position data, but unclear how that would work for the non-contiguous field for "Flower Show"

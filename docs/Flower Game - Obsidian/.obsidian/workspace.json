@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Prototype - Done.md",
+                "file": "Memory and Sprite Management.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Prototype - Done"
+              "title": "Memory and Sprite Management"
             }
           }
         ]
@@ -182,9 +182,9 @@
   },
   "active": "0bd9873019e35e83",
   "lastOpenFiles": [
+    "Prototype - Done.md",
     "Memory and Sprite Management.md",
     "Future ideas.md",
-    "Prototype - Done.md",
     "Untitled.base",
     "Welcome.md"
   ]
