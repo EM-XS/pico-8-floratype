@@ -151,6 +151,7 @@ function generate_and_place_flower(flower_type)
 end
 
 function add_flower_to_field(flower, x, y)
+	field_debug = gene_str(flower.genes)
 	field1:place(flower, x, y)
 	create_and_place_flower_sprite(flower)
 end
@@ -255,8 +256,16 @@ function flower_class:place(fn, x, y)
 	self.fn, self.x, self.y = fn, x, y
 end
 
+function flower_class:type()
+	return self.genes << 16 & 0b1
+end
+
+function flower_class:color()
+	return self.genes << 15 & 0b11
+end
+
 function flower_class:is_compatible(flower)
-	return (self.genes[1] & 0b1) == (flower.genes[1] & 0b1)
+	return self:type() == flower:type()
 end
 
 function generate_flower(flower_type)
@@ -275,15 +284,14 @@ function generate_flower(flower_type)
 	--maybe need to use smaller
 	--templates or programmatically
 	--draw sprite instead
---	local flower_type = flr(rnd(2))
 	local c = flr(rnd(4))
 
-	-- bit 1 from the left is flower type
-	local gene1 = flower_type
-	-- bits 2 and 3 from the left are the color
-	gene1 += c << 1
+	-- bit 1 from the right is flower type
+	local genes = flower_type >>> 16
+	-- bits 2 and 3 from the right are the color
+	genes += c >>> 15
 	
-	return flower_class:new({gene1, 0, 0 ,0})
+	return flower_class:new(genes)
 end
 
 function spr_pos(s)
@@ -296,46 +304,34 @@ function breed(flower1, flower2)
 --	field_debug = gene_str(parent_genes2)
 	--randomly inherit each bit
 	--of genes from either parent
-	local genes = {}
-	for i=1,4 do
-		local gene = 0
-		for j=0,7 do
-			if rnd(2) >= 1 then
-				gene += flower1.genes[i] & (1 << j)
-			else
-				gene += flower2.genes[i] & (1 << j)
-			end
+	local genes = 0
+	for j=0,31 do
+		if rnd(2) >= 1 then
+			genes += flower1.genes & (0x0.0001 << j)
+		else
+			genes += flower2.genes & (0x0.0001 << j)
 		end
-		add(genes, gene)
 	end
-	
---	field_debug = gene_str(genes)
+
 	return flower_class:new(genes)
 end
 
 function gene_str(genes)
-	return tostr(genes[1]).." "..tostr(genes[2]).." "..tostr(genes[3]).." "..tostr(genes[4])
+	return tostr(genes, true)
 end
 
 local swap_sprite = 110
---probably chould hardcode this
---needed for blit as well
 local swap_x, swap_y = spr_pos(swap_sprite)
 
 
 function create_flower_sprite(flower)
 	--genetics contains 32 bits,
-	--represented by the flags of
-	--sprites s, s+1, s+16, s+17
-	--in order.
 	--meanings:
-	--bit 0: flower type
-	--bits 1-2: color
-	--bits 3-31: unused
-	local genes = flower.genes
-	local flower_type = genes[1] & 0b1
-	local template = 32 + flower_type * 2
-	local c = genes[1] >> 1 & 0b11
+	--bit 1: flower type
+	--bits 2-3: color
+	--bits 4-32: unused
+	local template = 32 + flower:type() * 2
+	local c = flower:color()
 
 	local tx, ty = spr_pos(template)
 	--sprite sheet local of swap sprite

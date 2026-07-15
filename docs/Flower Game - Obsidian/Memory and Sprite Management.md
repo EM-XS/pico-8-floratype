@@ -74,8 +74,8 @@ I think representing placement in RAM will be a consequence of whatever data str
 	* Cart storage / loading of genome data
 
 #### Cleanup steps
-- [ ] Adjust field (and button?) cursor indexing to be 1 based
-- [ ] Try switching genes to single 32 bit value instead of table
+- [x] Adjust field (and button?) cursor indexing to be 1 based
+- [x] Try switching genes to single 32 bit value instead of table
 - [x] Remove/refactor/rename functions with overlapping uses
 	- [x] create_flower
 	- [x] field1:place
