@@ -143,7 +143,7 @@ function click_button()
 end
 
 function generate_and_place_flower(flower_type)
-	if mget(fc_x*2, fc_y*2) == 0 then
+	if not field1:get(fc_x + 1, fc_y + 1) then
 		local flower = generate_flower(flower_type)
 		place_flower(flower.s, fc_x+1, fc_y+1)
 		field1:place(flower, fc_x+1, fc_y+1)
