@@ -2,5 +2,8 @@
 - [ ] Other screens
 	- [ ] Farmer's market
 	- [ ] Competition
+	- [ ] Calendar
 - [ ] Use IRL time
+- [ ] Multiple or scrollable fields
+- [ ] Cart Storage
 - [ ] Tools?

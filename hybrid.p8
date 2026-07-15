@@ -100,24 +100,27 @@ function move_cursor()
 	end
 	if on_field then
 		if btnp(⬆️) then
-			fc_y = max(1, fc_y-1)
+			fc_y -= 1
 		end
 		if btnp(⬇️) then
-			fc_y = min(7, fc_y+1)
+			fc_y += 1
 		end
 		if btnp(⬅️) then
-			fc_x = max(1, fc_x-1)
+			fc_x -= 1
 		end
 		if btnp(➡️) then
-			fc_x = min(8, fc_x+1)
+			fc_x += 1
 		end
+		fc_y = mid(1,fc_y,7)
+		fc_x = mid(1,fc_x,8)
 	else
 		if btnp(⬅️) then
-			bc_x = max(1, bc_x-1)
+			bc_x -= 1
 		end
 		if btnp(➡️) then
-			bc_x = min(5, bc_x+1)
+			bc_x += 1
 		end
+		bc_x = mid(1,bc_x,5)
 	end
 end
 
