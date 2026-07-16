@@ -112,24 +112,47 @@ function init_field_screen()
 	--camera coords represent top
 	--left corner of current view
 	fcam_x, fcam_y = 1, 1
-	f_max_x,f_max_y = 10, 10
+	f_max_x,f_max_y = 16, 16
+	animation = nil
+	a_frame = 0
+	anim_dx, anim_dy = 0 ,0
 	bc_x = 1
 	field_debug = ""
 	field1 = field_class:new(1)
 end
 
 function update_field_screen()
-	move_cursor()
-	click_button()
+	if not animation then
+		move_cursor()
+		click_button()
+	end
+	if animation then
+		animation()
+	end
 end
 
 function draw_field_screen()
 	cls()
+	clip(0, 0, 128, 112)
+	camera(anim_dx, anim_dy)
 	draw_ground()
 	draw_flowers()
-	draw_cursor()
+	draw_field_cursor()
+	clip()
+	camera()
+	draw_button_cursor()
 	draw_buttons()
-	print(field_debug, 80, 116)
+	print(field_debug, 86, 116)
+end
+
+function start_animation(a)
+	a_frame = 0
+	animation = a
+end
+
+function stop_animation()
+	animation = nil
+	anim_dx, anim_dy = 0, 0
 end
 
 function move_cursor()
@@ -151,18 +174,19 @@ function move_cursor()
 		end
 		fc_y = mid(1,fc_y,f_max_y)
 		fc_x = mid(1,fc_x,f_max_x)
+		field_debug = fc_x.." "..fc_y
 		
 		if fc_y > fcam_y + 6 then
-			move_camera_down()
+			start_animation(move_camera_down)
 		end
 		if fc_y < fcam_y then
-			move_camera_up()
+			start_animation(move_camera_up)
 		end
 		if fc_x > fcam_x + 7 then
-			move_camera_right()
+			start_animation(move_camera_right)
 		end
 		if fc_x < fcam_x then
-			move_camera_left()
+			start_animation(move_camera_left)
 		end
 	else
 		if btnp(⬅️) then
@@ -176,47 +200,71 @@ function move_cursor()
 end
 
 function move_camera_down()
-	fcam_y += 1
-	for y=0,80,16 do
-		blit(
-			0x8000,0,y,
-			0x8000,0,y+16,
-			128,16)
+	a_frame += 1
+	if a_frame == 10 then
+		fcam_y += 1
+		for y=0,80,16 do
+			blit(
+				0x8000,0,y,
+				0x8000,0,y+16,
+				128,16)
+		end
+		sync_flower_sprites_row(fcam_y+6)
+		stop_animation()
+	else
+		anim_dy = 1.6 * a_frame
 	end
-	sync_flower_sprites_row(fcam_y+6)
 end
 
 function move_camera_up()
-	fcam_y -= 1
-	for y=80,0,-16 do
-		blit(
-			0x8000,0,y+16,
-			0x8000,0,y,
-			128,16)
+	a_frame += 1
+	if a_frame == 10 then
+		fcam_y -= 1
+		for y=80,0,-16 do
+			blit(
+				0x8000,0,y+16,
+				0x8000,0,y,
+				128,16)
+		end
+		sync_flower_sprites_row(fcam_y)
+		stop_animation()
+	else
+		anim_dy = -1.6 * a_frame
 	end
-	sync_flower_sprites_row(fcam_y)
 end
 
 function move_camera_right()
-	fcam_x += 1
-	for x=0,96,16 do
-		blit(
-			0x8000,x,0,
-			0x8000,x+16,0,
-			16,128)
+	a_frame += 1
+	if a_frame == 10 then
+		fcam_x += 1
+		for x=0,96,16 do
+			blit(
+				0x8000,x,0,
+				0x8000,x+16,0,
+				16,128)
+		end
+		sync_flower_sprites_col(fcam_x+7)
+		stop_animation()
+	else
+		anim_dx = 1.6 * a_frame
 	end
-	sync_flower_sprites_col(fcam_x+7)
 end
 
 function move_camera_left()
-	fcam_x -= 1
-	for x=96,0,-16 do
-		blit(
-			0x8000,x+16,0,
-			0x8000,x,0,
-			16,128)
+	a_frame += 1
+	if a_frame == 10 then
+		fcam_x -= 1
+		for x=96,0,-16 do
+			blit(
+				0x8000,x+16,0,
+				0x8000,x,0,
+				16,128)
+		end
+		sync_flower_sprites_col(fcam_x)
+		stop_animation()
+	else
+		anim_dx = -1.6 * a_frame
 	end
-	sync_flower_sprites_col(fcam_x)
 end
 
 function sync_flower_sprites_row(y)
@@ -284,8 +332,8 @@ function remove_flower_from_field()
 end
 
 function draw_ground()
-	for x=0,15 do
-		for y=0,13 do
+	for x=-2,17 do
+		for y=-2,15 do
 			spr(16,x*8,y*8)
 		end
 	end
@@ -299,8 +347,8 @@ function draw_flowers()
 	poke(0x5f54,0x00)
 end
 
-function draw_cursor()
-	if atn % 32 < 20 or not on_field then
+function draw_field_cursor()
+	if (atn % 32 < 20 and not animation) or not on_field then
 		for fx=0,1 do
 			for fy=0,1 do
 				spr(
@@ -313,6 +361,9 @@ function draw_cursor()
 			end
 		end
 	end
+end
+
+function draw_button_cursor()
 	if atn % 32 < 20 or on_field then
 		for fx=0,1 do
 			for fy=0,1 do
@@ -510,7 +561,7 @@ end
 -->8
 --flower breeding
 
-breed_rate = 100
+breed_rate = 20
 
 function time_passes()
 	--flowers are currently always
