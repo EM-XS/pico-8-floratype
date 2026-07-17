@@ -4,12 +4,12 @@
 - [x] Cursor draws in the right place
 - [x] Move flowers as camera moves
 - [x] Draw new flower in newly seen row
-- [ ] Animation
+- [x] Animation
 	- [x] Need a few frames for animation (4?)
 	- [x] Probably need to lock out controls while animation is playing
 	- [x] Draw existing dirt and flowers offset by a fractional number of tiles
 	- [x] While in the animation state, update the fraction every frame
 	- [x] After you've hit the full amount, then update fcam and remove the fractional offset
-	- [ ] Also need to partially draw the flowers that aren't in frame yet
-		- [ ] This doesn't pop the new flowers into view until the scroll is complete. Because I have the scroll speed turned down, this is quite noticeable.
-		- [ ] This would be easier we made the screen smaller. Then I could fit the full field + scroll area into one sprite sheet, and could adjust everything behind the scenes. The biggest impact is probably the "flower show" display idea, but that might be fine.
+	- [x] Also need to partially draw the flowers that aren't in frame yet
+		- [x] This doesn't pop the new flowers into view until the scroll is complete. Because I have the scroll speed turned down, this is quite noticeable.
+		- [x] This would be easier we made the screen smaller. Then I could fit the full field + scroll area into one sprite sheet, and could adjust everything behind the scenes. The biggest impact is probably the "flower show" display idea, but that might be fine.
